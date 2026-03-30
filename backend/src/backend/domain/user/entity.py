@@ -3,14 +3,15 @@ import uuid
 from dataclasses import dataclass, field
 
 from backend.domain.shared.value_objects.email.value_object import Email
+from backend.domain.shared.value_objects.name.value_object import Name
 from backend.domain.user.value_objects.username.value_object import Username
 
 
 @dataclass
 class User:
     id: uuid.UUID
-    first_name: str
-    last_name: str
+    first_name: Name
+    last_name: Name
     username: Username
     email: Email
     password_hash: str
