@@ -3,6 +3,7 @@ import uuid
 from dataclasses import dataclass, field
 
 from backend.domain.shared.value_objects.email.value_object import Email
+from backend.domain.user.value_objects.username.value_object import Username
 
 
 @dataclass
@@ -10,7 +11,7 @@ class User:
     id: uuid.UUID
     first_name: str
     last_name: str
-    username: str
+    username: Username
     email: Email
     password_hash: str
     last_interaction: datetime
