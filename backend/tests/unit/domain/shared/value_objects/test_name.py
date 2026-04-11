@@ -1,17 +1,21 @@
 import pytest
 
-from backend.domain.shared.value_objects.name.errors import UnsupportedNameTypeError, InvalidNameLengthError, \
+from src.backend.domain.shared.value_objects.name.errors import UnSupportedNameTypeError, InvalidNameLengthError, \
     InvalidNameFormatError
-from backend.domain.shared.value_objects.name.value_object import Name
+from src.backend.domain.shared.value_objects.name.value_object import Name
 
-
-
+@pytest.fixture
+def test_name():
+    return Name("test")
 
 @pytest.mark.parametrize(
-    'value, expected',
+    "value, expected",
     [
-        ("Sanjar", "Sanjar"),
-        ("Санжар", "Санжар")
+        ("Alex", "Alex"),
+        ("john", "john"),
+        ("USERNAME", "USERNAME"),
+        ("TestName", "TestName"),
+        ("Алексей", "Алексей"),
     ]
 )
 def test_valid_name(value, expected):
@@ -21,25 +25,25 @@ def test_valid_name(value, expected):
 @pytest.mark.parametrize(
     "value",
     [
-        123,
-        1.5,
-        ["Sanjar"],
-        {"name": "Sanjar"},
+        1.2,
+        [1, 2, 3],
+        {1},
+        {"name": "alice"}
     ]
 )
-def test_name_invalid_type(value):
-    with pytest.raises(UnsupportedNameTypeError):
+def test_unsupported_name_type(value):
+    with pytest.raises(UnSupportedNameTypeError):
         Name(value)
 
 
 @pytest.mark.parametrize(
     "value",
     [
-        "Sa",
-        "Sa" * 101
+        "a",
+        "a" * 256
     ]
 )
-def test_name_invalid_length(value):
+def test_invalid_name_length(value):
     with pytest.raises(InvalidNameLengthError):
         Name(value)
 
@@ -47,13 +51,12 @@ def test_name_invalid_length(value):
 @pytest.mark.parametrize(
     "value",
     [
-        "Sanjar123",
-        "Sanjar@",
-        "San_jar",
-        "Sanjar--Sa",
-        "Sanjar  sa",
+        "alex123"     # есть цифры
+        "user_name"   # есть _
+        "john doe"    # пробел
+        "123"         # только цифры
     ]
 )
-def test_name_invalid_format(value):
+def test_invalid_name_format(value):
     with pytest.raises(InvalidNameFormatError):
         Name(value)

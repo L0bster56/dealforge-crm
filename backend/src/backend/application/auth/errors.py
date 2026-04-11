@@ -7,14 +7,12 @@ class AuthError(ApplicationError):
     """
 
 class AuthUserNotFoundError(AuthError):
-    """
-
-    """
+    pass
 
 class InvalidPasswordError(AuthError):
     pass
 
-class InactiveUserError(AuthError):
+class InActiveUserError(AuthError):
     pass
 
 class WeakPasswordError(AuthError):

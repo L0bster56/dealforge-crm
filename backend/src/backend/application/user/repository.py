@@ -1,4 +1,3 @@
-#repository.py
 from typing import Protocol
 from uuid import UUID
 
@@ -9,7 +8,6 @@ class UserRepository(Protocol):
     """
     Interface для User Repository
     """
-
     async def get_by_username(self, username: str) -> User: ...
 
     async def get_by_email(self, email: str) -> User: ...

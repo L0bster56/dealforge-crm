@@ -1,4 +1,4 @@
 class ApplicationError(Exception):
     """
-    Базовая ошибка слоя ApplicationError
+    Базовая ошибка слоя Application
     """

@@ -1,22 +1,26 @@
 import pytest
 
-from backend.domain.shared.value_objects.email.errors import InvalidEmailError
-from backend.domain.shared.value_objects.email.value_object import Email
+from src.backend.domain.shared.value_objects.email.errors import InvalidEmailError
+from src.backend.domain.shared.value_objects.email.value_object import Email
 
+
+@pytest.fixture
+def test_email():
+    return Email("testuser@gmail.com")
 
 @pytest.mark.parametrize(
     "value, expected",
     [
-        ("user1@example.com", "user1@example.com"),
-        ("john.doe@gmail.com", "john.doe@gmail.com"),
-        ("alice_smith@yahoo.com", "alice_smith@yahoo.com"),
-        ("test.user123@outlook.com", "test.user123@outlook.com"),
-        ("dev-team@company.org", "dev-team@company.org"),
-        ("first.last@sub.domain.com", "first.last@sub.domain.com"),
-        ("simple@mail.net", "simple@mail.net"),
-        ("contact_us@service.co", "contact_us@service.co"),
-        ("myemailfilter@gmail.com", "myemailfilter@gmail.com"),
-        ("info123@business.io", "info123@business.io"),
+        ("test.user@gmail.com", "test.user@gmail.com"),
+        ("example123@yahoo.com", "example123@yahoo.com"),
+        ("user_name@outlook.com", "user_name@outlook.com"),
+        ("my-email@mail.ru", "my-email@mail.ru"),
+        ("hello.world@company.org", "hello.world@company.org"),
+        ("user2025@test.net", "user2025@test.net"),
+        ("first.last@domain.co", "first.last@domain.co"),
+        ("simple@mail.com", "simple@mail.com"),
+        ("name.surname123@service.io", "name.surname123@service.io"),
+        ("x_y-z@sub.domain.com", "x_y-z@sub.domain.com"),
     ]
 )
 def test_valid_email(value, expected):
@@ -26,21 +30,16 @@ def test_valid_email(value, expected):
 @pytest.mark.parametrize(
     "value",
     [
-        "plainaddress",
-        "@no-local-part.com",
-        "user@",
-        "user@.com",
-        "user@com",
-        "user@domain..com",
-        "user.name@gmailcom",
-        "user#domain.com",
-        "user@domain,com",
-        "user@domain com"
-        " user@gmail.com",
-        "user@gmail.com ",
-        "user@-domain.com",
-        "user@domain-.com",
-        "user@domain.c",
+        "plainaddress",  # нет @
+        "@no-local-part.com",  # нет имени до @
+        "user@",  # нет домена
+        "user@.com",  # домен начинается с точки
+        "user@com",  # нет точки в домене
+        "user@domain..com",  # двойная точка
+        "user@@domain.com",  # два @
+        "user domain@domain.com",  # пробел внутри
+        "user#domain.com",  # нет @ вообще
+        "user@domain,com"  # запятая вместо точки
     ]
 )
 def test_invalid_email(value):

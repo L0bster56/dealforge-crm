@@ -1,17 +1,19 @@
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True)
 class LoginUserCommand:
     """
-    Команда для авторизации
+    команда для авторизации
     """
     username: str
     password: str
 
+
 @dataclass(frozen=True)
 class LoginUserResult:
     """
-    Результат авторизации
+    результат авторизации
     """
     access_token: str
     refresh_token: str

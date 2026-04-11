@@ -6,7 +6,7 @@ from src.backend.domain.shared.value_objects.id.errors import UnsupportedTypeIdE
 @dataclass(frozen=True)
 class Id:
     """
-    VO Id нужен для значений целочисленных ИД
+    VO Id нужен для значений целочисленный ИД
 
     Attributes:
         value: Значение в типе данных int
@@ -18,4 +18,5 @@ class Id:
             raise UnsupportedTypeIdError()
 
         if self.value <= 0:
-            raise NegativeIntIdError
+            raise NegativeIntIdError()
+        

@@ -1,17 +1,19 @@
 from src.backend.domain.shared.errors import DomainError
 
 
-class IDError(DomainError):
+class IdError(DomainError):
     """
-    Это Базовая ошибка VO Id
-    """
-
-class UnsupportedTypeIdError(IDError):
-    """
-    Вызывается когда дают не поддерживающий тип значения.
+    Базовая ошибка VO Id
     """
 
-class NegativeIntIdError(IDError):
+class UnsupportedTypeIdError(IdError):
     """
-    Вызывается когда дают отрицательное значение.
+    Вызывается когда дают не поддерживающий тип значения
     """
+
+
+class NegativeIntIdError(IdError):
+    """
+    Вызывается когда дают отрицательное значение
+    """
+

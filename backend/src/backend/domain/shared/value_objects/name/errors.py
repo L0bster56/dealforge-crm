@@ -1,22 +1,22 @@
-from backend.domain.shared.errors import DomainError
+from src.backend.domain.shared.errors import DomainError
 
 
-class NameErrors(DomainError):
+class NameVOError(DomainError):
+    """
+    Базовая ошибка VO Name
     """
 
+class UnSupportedNameTypeError(NameVOError):
+    """
+    Вызывается когда указали неправильный тип значения
     """
 
-class UnsupportedNameTypeError(NameErrors):
+class InvalidNameLengthError(NameVOError):
+    """
+    Вызывается когда длина имени превышает диапазон
     """
 
+class InvalidNameFormatError(NameVOError):
     """
-
-class InvalidNameLengthError(NameErrors):
-    """
-
-    """
-
-class InvalidNameFormatError(NameErrors):
-    """
-
+    Вызывается когда формат имени неправильный
     """

@@ -1,16 +1,17 @@
-from datetime import datetime
+import time
 import uuid
 from dataclasses import dataclass, field
+from datetime import datetime
 
-from backend.domain.shared.value_objects.email.value_object import Email
-from backend.domain.shared.value_objects.name.value_object import Name
-from backend.domain.user.value_objects.username.value_object import Username
+from src.backend.domain.shared.value_objects.email.value_object import Email
+from src.backend.domain.shared.value_objects.name.value_object import Name
+from src.backend.domain.user.value_objects.username.value_object import Username
 
 
 @dataclass
 class User:
     """
-    Главаная Сущность Пользователя
+    Главная сущность пользователя
     """
     id: uuid.UUID
     first_name: Name
@@ -21,37 +22,32 @@ class User:
     last_interaction: datetime | None = None
     is_active: bool = field(default=True)
     created_at: datetime = field(default_factory=datetime.now)
-    update_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
 
     @property
     def full_name(self) -> str:
         """
-        Свойство, которое возвращает Полное Имя Пользователя
-        :return:
+        Свойство которое возвращает полное имя пользователя
         """
         return f"{self.first_name} {self.last_name}"
 
     def touch(self) -> None:
         """
         Будет фиксировать время изменения
-        :return:
         """
-        self.update_at = datetime.now()
+        self.updated_at = datetime.now()
 
     def interact(self):
         """
         Будет фиксировать время последней активности
-        :return:
         """
         self.last_interaction = datetime.now()
 
-    def ensure_active(self):
+    def endure_active(self):
         """
-        Будет проверять что пользователь наш активен
-        :return:
+        Будет проверять что пользователь активен
         """
-        if self.is_active:
-            raise
+        return self.is_active
 
     @classmethod
     def create(
@@ -64,14 +60,14 @@ class User:
             password_hash: str,
     ):
         """
-        Создает Объект Пользователя
-        :param id: Уникальный Идентификатор
-        :param first_name: Имя Пользователя
-        :param last_name: Фамилия Пользователя
-        :param username: Юзернейм
-        :param email: Электронная Почта
-        :param password_hash: 3aхешированный Пароль
-        :return: Объект Пользователя
+        Создает объект
+        :param id: уникальный идентификатор
+        :param first_name: имя пользователя
+        :param last_name: фамилия пользователя
+        :param username: юзернейм
+        :param email: электронная почта
+        :param password_hash: захешированный пароль
+        :return: объект пользователя
         """
         return cls(
             id=id,
@@ -79,15 +75,13 @@ class User:
             last_name=Name(last_name),
             username=Username(username),
             email=Email(email),
-            password_hash=password_hash,
+            password_hash=password_hash
         )
+
+    def change_password(self, new_password: str):
+        self.password_hash = new_password
+        self.touch()
 
     def __hash__(self):
         return hash(self.id)
 
-    def change_password(
-            self,
-            new_password: str,
-    ):
-        self.password_hash = new_password
-        self.touch()

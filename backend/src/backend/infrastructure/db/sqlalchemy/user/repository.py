@@ -42,10 +42,10 @@ def to_entity(user: UserModel) -> User:  # new *
         is_active=user.is_active,
     )
 
-
 class SqlalchemyUserRepository(UserRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
+
 
     async def get_by_id(self, user_id: UUID) -> User:
         stmt = select(UserModel).where(UserModel.id == user_id)
@@ -54,7 +54,7 @@ class SqlalchemyUserRepository(UserRepository):
         return to_entity(user) if user else None
 
     async def get_by_username(self, username: str) -> User:
-        stmt = select(UserModel).where(UserModel.username == username)
+        stmt = select(UserModel).where(UserModel.username== username)
         result = await self.session.execute(stmt)
         user = result.scalar_one_or_none()
         return to_entity(user) if user else None
