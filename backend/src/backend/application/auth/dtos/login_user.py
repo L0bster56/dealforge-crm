@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
+from pydantic import BaseModel
 
-@dataclass(frozen=True)
-class LoginUserCommand:
+
+class LoginUserCommand(BaseModel):
     """
     команда для авторизации
     """
@@ -10,8 +11,7 @@ class LoginUserCommand:
     password: str
 
 
-@dataclass(frozen=True)
-class LoginUserResult:
+class LoginUserResult(BaseModel):
     """
     результат авторизации
     """

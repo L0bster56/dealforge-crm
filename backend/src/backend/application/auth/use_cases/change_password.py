@@ -6,6 +6,7 @@ from src.backend.application.auth.errors import AuthUserNotFoundError, InvalidPa
 from src.backend.application.auth.interfaces.security.hasher import Hasher
 from src.backend.application.shared.interfaces.uow import UnitOfWork
 from src.backend.domain.shared.specification import Specification
+from src.backend.domain.user.entity import User
 
 
 @dataclass
@@ -14,24 +15,20 @@ class ChangePasswordUseCase:
     hasher: Hasher
     password_spec: Specification[str]
     password_diff_spec: Specification[tuple[str, str]]
+    user: User
 
     async def execute(self, cmd: ChangePasswordCommand):
         if not self.password_spec.is_satisfied_by(cmd.new_password):
-            raise WeakPasswordError()
+            raise WeakPasswordError("new password is too weak")
 
         if not self.password_diff_spec.is_satisfied_by((cmd.old_password, cmd.new_password)):
-            raise SamePasswordError()
+            raise SamePasswordError("new password is the same as old password")
 
         async with self.uow as uow:
-            user = await uow.users.get_by_id(cmd.user_id)
+            if not self.hasher.verify(cmd.old_password, self.user.password_hash):
+                raise InvalidPasswordError("invalid password")
 
-            if not user:
-                raise AuthUserNotFoundError()
-
-            if not self.hasher.verify(cmd.old_password, user.password_hash):
-                raise InvalidPasswordError()
-
-            user.change_password(self.hasher.hash(cmd.new_password))
-            await self.uow.users.update(user)
+            self.user.change_password(self.hasher.hash(cmd.new_password))
+            await self.uow.users.update(self.user)
             await uow.commit()
 

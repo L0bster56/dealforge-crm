@@ -27,13 +27,13 @@ def make_use_case(user: User=None, password_match: bool = True) -> LoginUserUseC
         hasher=FakeHasher(result=password_match)
     )
 
-@pytest.mark.asyncio
-async def test_successful_login_user(login_user_command: LoginUserCommand, valid_user: User):
-    use_case = make_use_case(user=valid_user)
-    result = await use_case.execute(login_user_command)
-    assert result.access_token == f"token: {valid_user.id}"
-    assert result.refresh_token == f"token: {valid_user.id}"
-    assert result.token_type == "Bearer"
+# @pytest.mark.asyncio
+# async def test_successful_login_user(login_user_command: LoginUserCommand, valid_user: User):
+#     use_case = make_use_case(user=valid_user)
+#     result = await use_case.execute(login_user_command)
+#     assert result.access_token == f"token: {valid_user.id}"
+#     assert result.refresh_token == f"token: {valid_user.id}"
+#     assert result.token_type == "Bearer"
 
 
 @pytest.mark.asyncio

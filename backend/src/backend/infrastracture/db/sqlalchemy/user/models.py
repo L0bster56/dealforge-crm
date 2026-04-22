@@ -12,4 +12,5 @@ class UserModel(Base, UUIDMixin, TimeStampMixin, ActiveMixin):
     email = Column(String(320), nullable=False, unique=True)
     username = Column(String(255), nullable=False, unique=True)
     password_hash = Column(String, nullable=False)
+    role = Column(String(30), nullable=False)
     last_interaction = Column(DateTime, nullable=True)

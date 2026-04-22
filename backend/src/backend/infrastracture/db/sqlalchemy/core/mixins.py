@@ -1,8 +1,7 @@
 import uuid
 from datetime import datetime
-from uuid import UUID
 
-from sqlalchemy import Column, DateTime, BigInteger, Boolean
+from sqlalchemy import Column, DateTime, BigInteger, Boolean, UUID
 
 
 class UUIDMixin:

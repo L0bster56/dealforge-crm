@@ -24,16 +24,16 @@ class LoginUserUseCase:
             user = await self.uow.users.get_by_username(cmd.username)
 
             if not user:
-                raise AuthUserNotFoundError()
+                raise AuthUserNotFoundError("invalid password or username")
 
             if not self.hasher.verify(cmd.password, user.password_hash):
-                raise InvalidPasswordError()
+                raise InvalidPasswordError("invalid password or username")
 
             if not user.is_active:
-                raise InActiveUserError()
+                raise InActiveUserError("user is not active")
 
-            access_token = self.tokens.encode({"sub": user.id})
-            refresh_token = self.tokens.encode({"sub": user.id, "is_refresh": True})
+            access_token = self.tokens.encode(user.id)
+            refresh_token = self.tokens.encode(user.id,  True)
             token_type = self.tokens.get_token_type()
 
             return LoginUserResult(
