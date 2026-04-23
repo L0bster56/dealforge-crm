@@ -9,6 +9,7 @@ from src.backend.presentation.api.v1.core.handlers.bad_request import bad_reques
 from src.backend.presentation.api.v1.core.handlers.conflict import conflict_exception_handler
 from src.backend.presentation.api.v1.core.handlers.not_found import not_found_exception_handler
 from src.backend.presentation.api.v1.user.router import router as user_router
+from src.backend.presentation.api.v1.funnel.router import router as funnel_router
 app = FastAPI(
     title="DealForge CRM API",
     description="",
@@ -23,6 +24,7 @@ app.add_exception_handler(NotFoundError, not_found_exception_handler)
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(user_router, prefix="/api/v1")
+app.include_router(funnel_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn

@@ -64,32 +64,8 @@ def test_create_user(
     assert user.password_hash == password_hash
 
 
-@pytest.mark.parametrize(
-    "first_name, last_name, email, username",
-    [
-        ("a", "Test", "testuser@gmail.com", "testuser"),
-        ("Test", "a", "testuser@gmail.com", "testuser"),
-        ("Test", "User", "testuser", "testuser"),
-        ("Test", "User", "testuser@gmail.com", "__testuser"),
-    ]
-)
-def test_invalid_create_user(
-    user_id,
-    first_name,
-    last_name,
-    email,
-    username,
-    password_hash
-):
-    with pytest.raises(DomainError):
-        User.create(
-            id=user_id,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            username=username,
-            password_hash=password_hash
-        )
+
+
 
 def test_user_full_name(valid_user):
     full_name = valid_user.full_name

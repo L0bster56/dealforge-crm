@@ -5,8 +5,11 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from backend.infrastracture.db.sqlalchemy.funnel.models import FunnelModel
 from src.backend.infrastracture.db.sqlalchemy.core.models import Base
 from src.backend.infrastracture.db.sqlalchemy.user.models import UserModel
+
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -1,12 +1,17 @@
 import pytest
 
-from backend.domain.user.value_objects.username.errors import InvalidUsernameFormatError, UnSupportedUsernameTypeError, \
-    InvalidUsernameLengthError
 from backend.domain.user.value_objects.username.value_object import Username
+from src.backend.domain.user.value_objects.username.errors import (
+    InvalidUsernameFormatError,
+    UnSupportedUsernameTypeError,
+    InvalidUsernameLengthError
+)
+
 
 @pytest.fixture
 def test_username():
     return Username("testuser")
+
 
 @pytest.mark.parametrize(
     "value, expected",

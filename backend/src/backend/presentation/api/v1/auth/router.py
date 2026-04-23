@@ -155,7 +155,7 @@ class AuthRouter:
             uow=self.uow,
             user=user
         )
-        response = await uc.execute(
+        await uc.execute(
             cmd=request
         )
 
