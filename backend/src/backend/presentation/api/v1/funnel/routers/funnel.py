@@ -5,16 +5,13 @@ from starlette import status
 from backend.application.funnel.dtos.create_funnel import CreateFunnelResult, CreateFunnelCommand
 from backend.application.funnel.dtos.list_funnel import ListFunnelCommand
 from backend.application.funnel.dtos.update_funnel import UpdateFunnelCommand
-from backend.application.funnel.use_cases.create_funnel import CreateFunnelUseCase
-from backend.application.funnel.use_cases.delete_funnel import DeleteFunnelUseCase
-from backend.application.funnel.use_cases.list_funnel import ListFunnelUseCase
-from backend.application.funnel.use_cases.update_funnel import UpdateFunnelUseCase
 from backend.domain.funnel.entity import Funnel
 from backend.domain.user.entity import User
 from backend.infrastracture.db.sqlalchemy.core.uow import SqlAlchemyUnitOfWork
 from backend.presentation.api.v1.auth.dependencies import get_current_user
 from backend.presentation.api.v1.core.dependencies import get_uow
-from backend.presentation.api.v1.funnel.dependencies import get_funnel
+from backend.presentation.api.v1.funnel.dependencies import GetCreateFunnelDep, GetFunnelDep, \
+    UpdateFunnelDep, DeleteFunnelDep, ListFunnelDep
 
 router = APIRouter(
     prefix="/funnel",
@@ -34,13 +31,10 @@ class FunnelRouter:
     )
     async def create_funnel(
             self,
-            request: CreateFunnelCommand
+            request: CreateFunnelCommand,
+            uc: GetCreateFunnelDep
     ):
-        uc = CreateFunnelUseCase(
-            uow=self.uow,
-            user=self.user,
-        )
-        result = await uc.execute(cmd=request)
+        result = uc.execute(request)
         return result
 
     @router.get(
@@ -49,8 +43,10 @@ class FunnelRouter:
     )
     async def get_funnel(
             self,
-            funnel: Funnel = Depends(get_funnel),
+            funnel_id: int,
+            uc: GetFunnelDep
     ):
+        funnel = uc.execute(funnel_id)
         return funnel
 
     @router.patch(
@@ -60,14 +56,9 @@ class FunnelRouter:
     async def update_funnel(
             self,
             request: UpdateFunnelCommand,
-            funnel: Funnel = Depends(get_funnel),
+            uc: UpdateFunnelDep
 
     ):
-        uc = UpdateFunnelUseCase(
-            uow=self.uow,
-            user=self.user,
-            funnel=funnel,
-        )
         await uc.execute(cmd=request)
 
     @router.delete(
@@ -76,13 +67,8 @@ class FunnelRouter:
     )
     async def delete_funnel(
             self,
-            funnel: Funnel = Depends(get_funnel),
+            uc: DeleteFunnelDep
     ):
-        uc = DeleteFunnelUseCase(
-            uow=self.uow,
-            user=self.user,
-            funnel=funnel,
-        )
         await uc.execute()
 
     @router.get(
@@ -91,12 +77,8 @@ class FunnelRouter:
     )
     async def get_all_funnels(
             self,
-            cmd: ListFunnelCommand
+            cmd: ListFunnelCommand,
+            uc: ListFunnelDep
     ):
-        uc = ListFunnelUseCase(
-            uow=self.uow,
-            user=self.user,
-        )
-
         result = await uc.execute(cmd=cmd)
         return result

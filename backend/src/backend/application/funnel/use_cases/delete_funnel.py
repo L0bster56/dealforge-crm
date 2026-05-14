@@ -8,18 +8,41 @@ from backend.domain.user.entity import User
 
 @dataclass
 class DeleteFunnelUseCase:
+    """
+    Use Case удаления воронки (Funnel).
+
+    Отвечает за:
+    - проверку прав пользователя через policy
+    - изменение состояния доменной сущности (soft delete)
+    - удаление воронки через репозиторий
+    - фиксацию изменений в базе данных
+
+    Attributes:
+        uow: UnitOfWork для работы с базой данных.
+        user: пользователь, выполняющий операцию (actor).
+        funnel: воронка, которую необходимо удалить.
+    """
+
     uow: UnitOfWork
     user: User
     funnel: Funnel
 
-    async def execute(
-            self
-    ) -> None:
+    async def execute(self) -> None:
+        """
+        Выполняет удаление воронки.
+
+        Raises:
+            PermissionError: если пользователь не имеет прав на удаление.
+
+        Returns:
+            None
+        """
+
         CanDeleteFunnelPolicy(self.user).enforce()
 
         async with self.uow:
             self.funnel.delete()
 
-            await self.uow.funnels.delete_funnel(self.funnel)
+            await self.uow.funnels.update_funnel(self.funnel)
 
             await self.uow.commit()

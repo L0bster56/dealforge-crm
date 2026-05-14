@@ -2,10 +2,18 @@ from src.backend.domain.shared.errors import DomainError
 
 
 class HexError(DomainError):
-    pass
+    """
+    Базовая ошибка для Value Object HexCode.
+    """
+
 
 class InvalidHexError(HexError):
-    pass
+    """
+    Ошибка некорректного HEX-кода.
+    """
+
 
 class UnsupportedHexTypeError(HexError):
-    pass
+    """
+    Ошибка неподдерживаемого типа HEX-кода.
+    """

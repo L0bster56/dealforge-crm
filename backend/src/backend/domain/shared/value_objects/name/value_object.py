@@ -19,19 +19,18 @@ class Name:
         if not isinstance(self.value, str):
             raise UnSupportedNameTypeError()
 
-        if len(self.value) <= 2 or len(self.value) >= 255:
+        if len(self.value) <= 2 or len(self.value) >= 512:
             raise InvalidNameLengthError()
 
         if not self.__is_valid():
             raise InvalidNameFormatError()
-
 
     def __is_valid(self) -> bool:
         """
         Приватная функция для проверки валидного имени
         :return: True или False
         """
-        pattern = r'^[a-zA-Zа-яА-ЯёЁ]+$'
+        pattern = r'^[a-zA-Zа-яА-ЯёЁ ]+$'
         return re.match(pattern, self.value) is not None
 
     def __hash__(self):

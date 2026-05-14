@@ -2,10 +2,18 @@ from src.backend.domain.shared.errors import DomainError
 
 
 class ProbabilityError(DomainError):
-    pass
+    """
+    Базовая ошибка для Value Object Probability.
+    """
+
 
 class OutOfRangeProbabilityError(ProbabilityError):
-    pass
+    """
+    Ошибка, возникающая при выходе значения вероятности за допустимый диапазон.
+    """
+
 
 class UnsupportedProbabilityTypeError(ProbabilityError):
-    pass
+    """
+    Ошибка, возникающая при передаче неподдерживаемого типа.
+    """

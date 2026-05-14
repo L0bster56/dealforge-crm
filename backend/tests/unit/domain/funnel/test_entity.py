@@ -70,7 +70,7 @@ def valid_funnel_stage(
         funnel_id=funnel_id,
         name=test_name,
         win_probability=win_probability,
-        hex=hex_code,
+        hex_code=hex_code,
         order=funnel_stage_order
     )
 
@@ -94,6 +94,6 @@ def test_valid_create_funnel_stage(
     assert funnel_stage.funnel_id == funnel_id
     assert funnel_stage.name == test_name
     assert funnel_stage.win_probability == win_probability
-    assert funnel_stage.hex == hex_code
+    assert funnel_stage.hex_code == hex_code
     assert funnel_stage.order == funnel_stage_order
 

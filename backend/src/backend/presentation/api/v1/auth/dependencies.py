@@ -1,5 +1,6 @@
 from fastapi import Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from sqlalchemy.sql.annotation import Annotated
 
 from src.backend.application.auth.dtos.get_me import GetMeCommand
 from src.backend.application.auth.use_cases.get_me import GetMeUseCase
@@ -34,6 +35,10 @@ async def get_current_user(
     )
     return user
 
+CurrentUserDep = Annotated[
+    User,
+    Depends(get_current_user),
+]
 
 async def get_password_length_spec() -> PasswordLengthSpecification:
     return PasswordLengthSpecification()

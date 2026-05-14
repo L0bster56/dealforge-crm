@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Protocol, List
 from uuid import UUID
 
 from src.backend.domain.user.entity import User
@@ -26,4 +26,6 @@ class UserRepository(Protocol):
 
     async def delete(self, user: User) -> None: ...
 
-    async def list(self): ...
+    async def list_all(self): ...
+
+    async def list_by_ids(self, user_ids: list[UUID]) -> list[User]: ...

@@ -1,4 +1,3 @@
-import uuid
 from dataclasses import dataclass
 
 from src.backend.application.auth.errors import EmailAlreadyExistsError, WeakPasswordError
@@ -13,41 +12,66 @@ from src.backend.domain.user.policies.can_create import CanCreateUserPolicy
 
 @dataclass
 class CreateUserUseCase:
+    """
+    Use Case создания нового пользователя.
+
+    Отвечает за:
+    - проверку прав текущего пользователя (actor)
+    - проверку уникальности email и username
+    - проверку сложности пароля через Specification
+    - создание пользователя через доменную сущность
+    - сохранение пользователя в БД через Unit of Work
+
+    Attributes:
+        uow: Unit of Work для работы с базой данных.
+        hasher: Сервис хеширования паролей.
+        actor: Пользователь, выполняющий операцию.
+        password_spec: Спецификация проверки сложности пароля.
+    """
+
     uow: UnitOfWork
     hasher: Hasher
     actor: User
     password_spec: Specification[str]
 
-    async def execute(
-            self,
-            cmd: CreateUserCommand
-    ):
-        async with self.uow:
-            CanCreateUserPolicy(self.actor, cmd.role).enforce()
+    async def execute(self, cmd: CreateUserCommand) -> CreateUserResult:
+        """
+        Выполняет создание пользователя.
 
-            exists_email = await self.uow.users.exists_email(cmd.email)
-            if exists_email:
+        Args:
+            cmd: Команда создания пользователя.
+
+        Raises:
+            PermissionError: если actor не имеет прав (через policy).
+            EmailAlreadyExistsError: если email уже существует.
+            UsernameAlreadyExistsError: если username уже существует.
+            WeakPasswordError: если пароль не проходит проверку сложности.
+
+        Returns:
+            CreateUserResult: идентификатор созданного пользователя.
+        """
+        CanCreateUserPolicy(self.actor, cmd.role).enforce()
+        async with self.uow as uow:
+
+            if await self.uow.users.exists_email(cmd.email):
                 raise EmailAlreadyExistsError("email already exists")
 
-            exists_username = await self.uow.users.exists_username(cmd.username)
-            if exists_username:
+            if await self.uow.users.exists_username(cmd.username):
                 raise UsernameAlreadyExistsError("username already exists")
 
             if not self.password_spec.is_satisfied_by(cmd.password):
                 raise WeakPasswordError("password is too weak")
 
-            user_id = uuid.uuid4()
             user = User.create(
-                id=user_id,
                 first_name=cmd.first_name,
                 last_name=cmd.last_name,
                 username=cmd.username,
                 email=cmd.email,
                 role=cmd.role,
-                password_hash=self.hasher.hash(cmd.password)
+                password_hash=self.hasher.hash(cmd.password),
             )
 
             await self.uow.users.create(user)
-            await self.uow.commit()
+            await uow.commit()
 
-            return CreateUserResult(user_id=user_id)
+            return CreateUserResult(user_id=user.id)

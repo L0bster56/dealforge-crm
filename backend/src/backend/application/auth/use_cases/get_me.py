@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.backend.application.auth.dtos.get_me import GetMeCommand, GetMeResult
+from src.backend.application.auth.dtos.get_me import GetMeCommand
 from src.backend.application.auth.errors import InActiveUserError
 from src.backend.application.auth.interfaces.security.token import TokenService
 from src.backend.application.shared.interfaces.uow import UnitOfWork
@@ -9,13 +9,32 @@ from src.backend.domain.user.entity import User
 
 @dataclass
 class GetMeUseCase:
+    """
+    UseCase: получение текущего пользователя по токену.
+
+    Ответственность:
+        - Декодирование JWT токена
+        - Поиск пользователя в базе данных
+        - Проверка существования пользователя
+    """
+
     uow: UnitOfWork
     tokens: TokenService
 
-    async def execute(
-            self,
-            cmd: GetMeCommand
-    ) -> User:
+    async def execute(self, cmd: GetMeCommand) -> User:
+        """
+        Выполняет получение текущего пользователя.
+
+        Args:
+            cmd (GetMeCommand): Команда с токеном доступа
+
+        Returns:
+            User: Доменная сущность пользователя
+
+        Raises:
+            InActiveUserError: если пользователь не найден или неактивен
+        """
+
         async with self.uow:
             user_id = self.tokens.decode(cmd.token)
 
@@ -25,4 +44,3 @@ class GetMeUseCase:
                 raise InActiveUserError("user is not active")
 
             return user
-

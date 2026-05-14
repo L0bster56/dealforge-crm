@@ -2,6 +2,7 @@ from typing import AsyncGenerator
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql.annotation import Annotated
 
 from src.backend.infrastracture.db.sqlalchemy.core.session import async_session
 from src.backend.infrastracture.db.sqlalchemy.core.uow import SqlAlchemyUnitOfWork
@@ -21,3 +22,7 @@ async def get_uow(
     return SqlAlchemyUnitOfWork(
         session=session
     )
+UoWDep = Annotated[
+    SqlAlchemyUnitOfWork,
+    Depends(get_uow),
+]
