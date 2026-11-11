@@ -1,4 +1,7 @@
 class DomainError(Exception):
     """
-    Raised when a domain error occurs.
+    Базовая ошибка domain слоя
     """
+
+class PermissionDeniedError(DomainError):
+    pass

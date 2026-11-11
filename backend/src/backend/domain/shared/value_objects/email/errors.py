@@ -1,13 +1,12 @@
-from backend.domain.shared.errors import DomainError
+from src.backend.domain.shared.errors import DomainError
 
 
 class EmailError(DomainError):
     """
-    Базовая Ошибка VO Email
+    Базовая ошибка VO Email
     """
 
 class InvalidEmailError(EmailError):
     """
-    Вызывается когда неправильный форма Жектронной почты
+    Вызывается когда неправильный формат электронной почты
     """
-

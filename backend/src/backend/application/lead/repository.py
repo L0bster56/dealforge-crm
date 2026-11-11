@@ -1,0 +1,23 @@
+from uuid import UUID
+
+from mypy.semanal_shared import Protocol
+
+from backend.domain.lead.entity import LeadCustomField
+from backend.domain.lead.value_objects.field_type.value_object import FieldType
+
+
+class LeadCustomFieldRepository(Protocol):
+    async def add(self, field: LeadCustomField) -> LeadCustomField: ...
+
+    async def get_by_id(self, field_id: UUID) -> LeadCustomField | None: ...
+
+    async def update(self, field: LeadCustomField) -> None: ...
+
+    async def name_exists(self, name: str) -> bool: ...
+
+    async def list_all(self, include_deleted: bool = False, field_type: FieldType | None = None) -> list[
+        LeadCustomField]: ...
+
+    async def list_by_ids(self, custom_field_ids: list) -> list[LeadCustomField]: ...
+
+    async def count_values_with_enum_values(self, enum_id: UUID) -> int: ...
